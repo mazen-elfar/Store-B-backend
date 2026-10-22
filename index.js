@@ -75,6 +75,9 @@ const allowedOrigins = [
   'https://warmtotuch.store',
   'https://www.warmtouch.store',
   'https://warmtouch.store',
+  'https://store-b-ijy7.vercel.app',
+  'https://store-b-dashboard-zkdh.vercel.app',
+  'https://store-b-backend.onrender.com',
   'https://store-b-frontend.vercel.app',
   'https://store-b-admin.vercel.app',
   'https://store-b-production.up.railway.app',
@@ -101,7 +104,15 @@ app.use(cors({
       return callback(null, true);
     }
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    const normalizedOrigin = origin.replace(/\/+$/, '');
+
+    // Allow any Vercel deployment for this project
+    if (normalizedOrigin.endsWith('.vercel.app') && normalizedOrigin.includes('store-b')) {
+      return callback(null, true);
+    }
+
+    const cleanAllowedOrigins = allowedOrigins.map(o => o.replace(/\/+$/, ''));
+    if (cleanAllowedOrigins.indexOf(normalizedOrigin) !== -1) {
       callback(null, true);
     } else {
       console.log('❌ CORS Blocked Origin:', origin);
